@@ -4,6 +4,7 @@ import { FlatList, StyleSheet, Text, View } from "react-native";
 
 export default function Pokelist() {
     const [pokeCount, setPokeCount] = useState(10)
+
     const getPokeCount = async () => {
         return await fetch('https://pokeapi.co/api/v2/pokemon/')
         .then(resp => resp.json())
@@ -27,8 +28,6 @@ export default function Pokelist() {
     useEffect(() => {getPokeList()}, [pokeCount])
 
     const keys = Array.from({length : pokeCount}, (v, i) => {return {key: i}})
-    // console.log(keys)
-    // console.log(pokeList)
 
     console.log('refresh pokelist')
 

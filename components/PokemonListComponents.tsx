@@ -1,9 +1,11 @@
+import { FavouritePokemon } from "@/context/context/context";
 import { storeFavouritePokemon } from "@/storage/PokeStorage";
 import { Image } from "expo-image";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 export function PokeListTile(props : {name : string }) {
+    const {favouritePokemonName, setFavouritePokemonName} = useContext(FavouritePokemon);
     const pokeUrl = 'https://pokeapi.co/api/v2/pokemon/' + props.name
     const [pokeJson, setPokeJson] = useState<{sprites : {front_default : string}, name : string} | null>(null);
     const getPokeJson = async () => {
@@ -28,7 +30,8 @@ export function PokeListTile(props : {name : string }) {
         ></Image> */}
         <Pressable onPress={() => {
             console.log(props.name + ' clicked');
-            storeFavouritePokemon(props.name); 
+            setFavouritePokemonName(props.name)
+            storeFavouritePokemon(props.name);
         }}>
             <Image
                 style = {styles.pokeSprite}

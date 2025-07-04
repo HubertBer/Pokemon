@@ -1,33 +1,33 @@
-import { getFavouritePokemon, storeFavouritePokemon } from '@/storage/PokeStorage';
+import { FavouritePokemon } from '@/context/context/context';
+import { storeFavouritePokemon } from '@/storage/PokeStorage';
 import { Image } from 'expo-image';
 import { useLocalSearchParams } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { StyleSheet, Text, TextInput, View } from "react-native";
 
 export default function favourite_pokemon() {  
     
+    const {favouritePokemonName, setFavouritePokemonName} = useContext(FavouritePokemon);
+    // console.log(favouritePokemon)
+
     const { fp } =  useLocalSearchParams()
     console.log(fp)
 
     if (fp == '') {
-        console.log('emptty')        
+        console.log('empty')        
     }
 
-    const [favouritePokemonName, setFavouritePokemonName] = useState('')
+    // const [favouritePokemonName, setFavouritePokemonName] = useState('')
     const [favouritePokemonImageSrc, setFavouritePokemonImageSrc] = useState('')
 
     const getFavouritePokemonSprite = async () => {
         fetch('https://pokeapi.co/api/v2/pokemon/' + favouritePokemonName)
         .then( response => response.json())
         .then( json => {
-            return json.sprites.front_default
+            return json.sprites.other.home.front_default
         }).then(setFavouritePokemonImageSrc)
     }
 
-    useEffect(() => {
-        getFavouritePokemon()    
-        .then(setFavouritePokemonName);
-    }, [])
     useEffect(() => {getFavouritePokemonSprite()}, [favouritePokemonName])
 
     const onNewFavouritePokemon = () => {
