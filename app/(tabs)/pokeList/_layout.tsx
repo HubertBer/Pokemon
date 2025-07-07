@@ -7,8 +7,7 @@ export default function layout() {
             <Stack.Screen 
                 name="index"
                 options={{
-                    title : 'pokeList',
-                    navigationBarHidden : true,
+                    headerShown : false,
                 }}
             />
             
