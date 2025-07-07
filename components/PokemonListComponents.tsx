@@ -1,10 +1,15 @@
 import { FavouritePokemon } from "@/context/context/context";
 import { storeFavouritePokemon } from "@/storage/PokeStorage";
 import { Image } from "expo-image";
+import { router } from "expo-router";
 import { useContext, useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-export function PokeListTile(props : {name : string }) {
+export function PokeListTile(
+    props : {
+        name : string,
+        setSelectedPokemonName : (name : string) => void
+    }) {
     const {favouritePokemonName, setFavouritePokemonName} = useContext(FavouritePokemon);
     const pokeUrl = 'https://pokeapi.co/api/v2/pokemon/' + props.name
     const [pokeJson, setPokeJson] = useState<{sprites : {front_default : string}, name : string} | null>(null);
@@ -28,10 +33,20 @@ export function PokeListTile(props : {name : string }) {
             source = {
                 { uri: JSON.parse(pokeJson).sprites.front_default }}
         ></Image> */}
-        <Image
-            style = {styles.pokeSprite}
-            source = {{ uri: pokeJson.sprites.front_default }}
-        ></Image>
+        <Pressable
+            onPress={() => {
+                props.setSelectedPokemonName(props.name.toLowerCase())
+                console.log('set selected pokemon name to: ' + props.name.toLowerCase())
+                router.navigate('/(tabs)/pokeList/stats')
+            }}
+        >
+            <Image
+                style = {styles.pokeSprite}
+                source = {{ uri: pokeJson.sprites.front_default }}
+            ></Image>
+        </Pressable>
+
+
         <Pressable onPress={() => {
             console.log(props.name + ' heart clicked');
             if (favouritePokemonName == props.name) {

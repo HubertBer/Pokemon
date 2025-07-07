@@ -11,19 +11,18 @@ export default function RootLayout() {
     <FavouritePokemonProvider>
       <Tabs>
         <Tabs.Screen name="(tabs)/index" options = {{title:'Home'}}/>
-        <Tabs.Screen name='(tabs)/pokelist' 
+        <Tabs.Screen name='(tabs)/pokeList/index'
           options = {{
             title:'Pokemons' 
           }}
         />
         <Tabs.Screen
-            // Name of the dynamic route.
             name="(tabs)/favourite_pokemon"
             options={{
               title : 'Favourite Pokemon'
             }}
           />
-      </Tabs>;
+      </Tabs>
     </FavouritePokemonProvider>
   );
 }
