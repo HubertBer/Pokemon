@@ -10,11 +10,6 @@ export default function RootLayout() {
   return (
     <FavouritePokemonProvider>
       <Tabs>
-        {/* <Tabs.Screen name="(tabs)/favourite_pokemon" 
-          options = {{
-            title:'Favourite Pokemon',
-          }}
-        /> */}
         <Tabs.Screen name="(tabs)/index" options = {{title:'Home'}}/>
         <Tabs.Screen name='(tabs)/pokelist' 
           options = {{

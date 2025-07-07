@@ -3,12 +3,11 @@ import { storeFavouritePokemon } from '@/storage/PokeStorage';
 import { Image } from 'expo-image';
 import { useLocalSearchParams } from 'expo-router';
 import { useContext, useEffect, useState } from 'react';
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 export default function favourite_pokemon() {  
     
     const {favouritePokemonName, setFavouritePokemonName} = useContext(FavouritePokemon);
-    // console.log(favouritePokemon)
 
     const { fp } =  useLocalSearchParams()
     console.log(fp)
@@ -17,10 +16,14 @@ export default function favourite_pokemon() {
         console.log('empty')        
     }
 
-    // const [favouritePokemonName, setFavouritePokemonName] = useState('')
-    const [favouritePokemonImageSrc, setFavouritePokemonImageSrc] = useState('')
+    const [favouritePokemonImageSrc, setFavouritePokemonImageSrc] = useState<string | null>(null)
 
     const getFavouritePokemonSprite = async () => {
+        if (favouritePokemonName === '') {
+            setFavouritePokemonImageSrc(null)
+            console.log('no favourite pokemon :(')
+            return
+        }
         fetch('https://pokeapi.co/api/v2/pokemon/' + favouritePokemonName)
         .then( response => response.json())
         .then( json => {
@@ -32,13 +35,25 @@ export default function favourite_pokemon() {
 
     const onNewFavouritePokemon = () => {
         const pokeName = inputName
-        setFavouritePokemonName(pokeName);
-        storeFavouritePokemon(pokeName);
+        setFavouritePokemonName(pokeName.toLowerCase());
+        storeFavouritePokemon(pokeName.toLowerCase());
     }
 
     const [inputName, setInputName] = useState('')
 
     console.log('fav refresh');
+
+    const unfovouriteButton = favouritePokemonName == '' 
+        ? <></> 
+        : <Pressable onPress={() => {
+                storeFavouritePokemon('')
+                setFavouritePokemonName('') 
+            }}>
+                <Image
+                    style = {styles.heart}
+                    source = { require('@/assets/images/heart-filled.svg')}
+                />
+            </Pressable>
 
     return <>
     <View 
@@ -50,6 +65,7 @@ export default function favourite_pokemon() {
         <TextInput
             style={styles.input}
             onSubmitEditing={onNewFavouritePokemon}
+            onBlur={onNewFavouritePokemon}
             onChangeText={setInputName}
             value={inputName}
         />
@@ -59,15 +75,17 @@ export default function favourite_pokemon() {
         /> */}
         
         <Text>
-            My favourite pokemon is the {favouritePokemonName}.
+            {favouritePokemonName ? 'My favourite pokemon is the ' + favouritePokemonName : 'You don\'t yet have a favourite pokemon!\n Pick one from the list or type it\'s name here'}.
         </Text>
         <Image
             style = {{
                 width : 100,
                 height : 100,
             }}
-            source = {{ uri: favouritePokemonImageSrc }}
+            source = {favouritePokemonImageSrc ? { uri: favouritePokemonImageSrc } : require('@/assets/images/question-mark.svg')}
+            // source = {require('@/assets/images/question-mark.svg')}
         ></Image>
+        {unfovouriteButton}
     </View>
     </>
 }
@@ -79,5 +97,9 @@ const styles = StyleSheet.create({
         borderWidth: 4,
         padding: 5,
         minWidth: 100,
-    }
+    },
+    heart : {
+        height:100,
+        width:100,
+    },
 });

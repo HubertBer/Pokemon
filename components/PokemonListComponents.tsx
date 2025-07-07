@@ -28,16 +28,24 @@ export function PokeListTile(props : {name : string }) {
             source = {
                 { uri: JSON.parse(pokeJson).sprites.front_default }}
         ></Image> */}
+        <Image
+            style = {styles.pokeSprite}
+            source = {{ uri: pokeJson.sprites.front_default }}
+        ></Image>
         <Pressable onPress={() => {
-            console.log(props.name + ' clicked');
-            setFavouritePokemonName(props.name)
-            storeFavouritePokemon(props.name);
+            console.log(props.name + ' heart clicked');
+            if (favouritePokemonName == props.name) {
+                setFavouritePokemonName('')
+                storeFavouritePokemon('');
+            } else {
+                setFavouritePokemonName(props.name.toLowerCase())
+                storeFavouritePokemon(props.name.toLowerCase());
+            }
         }}>
             <Image
-                style = {styles.pokeSprite}
-                source = {
-                    { uri: pokeJson.sprites.front_default }}
-            ></Image>
+                style = {styles.heart}
+                source = {props.name == favouritePokemonName ? require('@/assets/images/heart-filled.svg') : require('@/assets/images/heart-empty.svg')}
+            />
         </Pressable>
         {/* <Pressable>
             <Image style = {styles.heart} source = {{uri : ''}}></Image>
