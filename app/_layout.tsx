@@ -6,7 +6,7 @@ import { useState } from "react";
 
 export default function RootLayout() {
   const [favouritePokemonName, setFavouritePokemonName] = useState<string | null>(null)
-
+  
   return (
     <FavouritePokemonProvider>
       <Tabs>
@@ -19,7 +19,8 @@ export default function RootLayout() {
         <Tabs.Screen
             name="(tabs)/favourite_pokemon"
             options={{
-              title : 'Favourite Pokemon'
+              title : 'Favourite Pokemon',
+              // tabBarIcon ,
             }}
           />
         <Tabs.Screen name='(tabs)/camera'
@@ -27,6 +28,11 @@ export default function RootLayout() {
             title: 'camera',
           }}
         />
+        {/* <Tabs.Screen name='(tabs)/camera2'
+          options = {{
+            title: 'camera2',
+          }}
+        /> */}
       </Tabs>
     </FavouritePokemonProvider>
   );
