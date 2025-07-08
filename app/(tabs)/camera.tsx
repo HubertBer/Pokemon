@@ -16,10 +16,14 @@ import {
 } from 'react-native-vision-camera-face-detector';
 import { useRunOnJS } from "react-native-worklets-core";
 
+import { CameraRoll } from "@react-native-camera-roll/camera-roll";
+
 const PHONE_WIDTH = Dimensions.get('window').width;
 const PHONE_HEIGHT = Dimensions.get('window').height;
 
 export default function CameraTab() {
+    const camera = useRef<Camera>(null)
+
     const {favouritePokemonName, setFavouritePokemonName} = useContext(FavouritePokemon);
     const [favouritePokemonImageSrc, setFavouritePokemonImageSrc] = useState<string | null>(null)
     
@@ -44,6 +48,8 @@ export default function CameraTab() {
 
     const top = useSharedValue<number>(0);
     const left = useSharedValue<number>(0);
+    const headWidth = useSharedValue<number>(100);
+    const headHeight = useSharedValue<number>(100);
     const animatedStyles = useAnimatedStyle(() => {
         return {
             position : 'absolute',
@@ -51,8 +57,8 @@ export default function CameraTab() {
                 {translateX : (PHONE_WIDTH - left.value) },
                 {translateY : top.value},
             ],
-            width : 100,
-            height : 100,
+            width : headWidth.value,
+            height : headHeight.value,
         }
     });
 
@@ -62,9 +68,11 @@ export default function CameraTab() {
     } = useWindowDimensions()
     const device = useCameraDevice('front');
 
-    const updatePosition = (x : number, y : number) => {
+    const updatePosition = (x : number, y : number, hx : number, hy : number) => {
         left.value = x
         top.value = y
+        headWidth.value = hx
+        headHeight.value = hy
     }
 
     const updatePosJS = useRunOnJS(updatePosition, [])
@@ -97,7 +105,7 @@ export default function CameraTab() {
                     x = faces[0].landmarks?.LEFT_EAR.x - 50 * scaleX
                     y = faces[0].landmarks?.LEFT_EAR.y + 30 * scaleY
                 }
-                updatePosJS(x, y)
+                updatePosJS(x, y, faces[0].bounds.width, faces[0].bounds.height)
             }
         })
     }, [])
@@ -128,13 +136,25 @@ export default function CameraTab() {
         </View>;
     }
 
+    const takeAPhoto = async () => {
+        console.log('take a photo')
+        if (camera) {
+            const file = await camera.current?.takePhoto()
+            await CameraRoll.save(`file://${file?.path }`, {
+            type: 'photo',
+            })
+        }
+    }
+
     return (
         <>
             <Camera 
-                device={device}
-                style={StyleSheet.absoluteFill}
-                isActive={true}
-                frameProcessor={frameProcessor}
+                device = {device}
+                style = {StyleSheet.absoluteFill}
+                isActive = {true}
+                frameProcessor = {frameProcessor}
+                ref = {camera}
+                photo = {true}
             >
             </Camera>
             <Animated.Image
@@ -142,7 +162,7 @@ export default function CameraTab() {
                 source = { pokeSpriteUrl }
             ></Animated.Image>
             <Pressable 
-                onPress={()=>{console.log('buon pressed')}}
+                onPress={takeAPhoto}
                 style = {{
                     alignItems : "center",
                     flex: 1,
