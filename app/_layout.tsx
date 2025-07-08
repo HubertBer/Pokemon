@@ -28,11 +28,6 @@ export default function RootLayout() {
             title: 'camera',
           }}
         />
-        {/* <Tabs.Screen name='(tabs)/camera2'
-          options = {{
-            title: 'camera2',
-          }}
-        /> */}
       </Tabs>
     </FavouritePokemonProvider>
   );
