@@ -1,5 +1,5 @@
 import { getFavouritePokemon } from "@/storage/PokeStorage";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect } from "react";
 
 export const FavouritePokemon = createContext<{ favouritePokemonName : string, setFavouritePokemonName : (name : string) => void}>({favouritePokemonName : '', setFavouritePokemonName : (name : string) => {}});
 
@@ -13,30 +13,33 @@ export const SelectedPokemon = createContext<{
 
 type Props = {
     children? : React.ReactNode,
+    pokemonName : string,
+    setPokemonName : (s : string) => void,
 }
-export function FavouritePokemonProvider( {children} : Props) {
-    const [favouritePokemonName, setFavouritePokemonName] = useState<string>('')
-    useEffect(() => {getFavouritePokemon().then(setFavouritePokemonName)}, []);
+
+export function FavouritePokemonProvider( {children, pokemonName, setPokemonName} : Props) {
+    // const [favouritePokemonName, setFavouritePokemonName] = useState<string>('')
+    useEffect(() => {getFavouritePokemon().then(setPokemonName)}, []);
 
     console.log(typeof children)
 
     return (
         <FavouritePokemon.Provider value = {{
-            favouritePokemonName : favouritePokemonName, 
-            setFavouritePokemonName : setFavouritePokemonName
+            favouritePokemonName : pokemonName, 
+            setFavouritePokemonName : setPokemonName
         }}>
             {children}
         </FavouritePokemon.Provider>
     );
 }
 
-export function SelectedPokemonProvider ({children} : Props ) {
-    const [selectedPokemonName, setSelectedPokemonName] = useState('')
+export function SelectedPokemonProvider ({children, pokemonName, setPokemonName} : Props ) {
+    // const [selectedPokemonName, setSelectedPokemonName] = useState('')
 
     return (
         <SelectedPokemon.Provider value = {{
-            selectedPokemonName : selectedPokemonName,
-            setSelectedPokemonName : setSelectedPokemonName,
+            selectedPokemonName : pokemonName,
+            setSelectedPokemonName : setPokemonName,
         }}>
             {children}
         </SelectedPokemon.Provider>

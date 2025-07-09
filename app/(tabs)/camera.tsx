@@ -101,9 +101,10 @@ export default function CameraTab() {
                 const scaleY = faces[0].bounds.width / 200
                 var x : number = 0
                 var y : number = 0
-                if ( faces[0].landmarks != undefined ) {
-                    x = faces[0].landmarks?.LEFT_EAR.x - 50 * scaleX
-                    y = faces[0].landmarks?.LEFT_EAR.y + 30 * scaleY
+                const face = faces[0]
+                if( face.landmarks && face.landmarks.LEFT_EAR ) {
+                    x = face.landmarks.LEFT_EAR.x - 50 * scaleX
+                    y = face.landmarks.LEFT_EAR.y + 30 * scaleY
                 }
                 updatePosJS(x, y, faces[0].bounds.width, faces[0].bounds.height)
             }

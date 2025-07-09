@@ -25,14 +25,7 @@ export function PokeListTile(
 
     if (pokeJson) {
         return <View style={styles.pokeTile}>
-        {/* <Text>{pokeUrl}</Text>
-        <Text>{pokeJson}</Text> */}
         <Text> Poke name : {props.name} </Text>
-        {/* <Image
-            style = {styles.pokeSprite}
-            source = {
-                { uri: JSON.parse(pokeJson).sprites.front_default }}
-        ></Image> */}
         <Pressable
             onPress={() => {
                 props.setSelectedPokemonName(props.name.toLowerCase())
@@ -62,31 +55,31 @@ export function PokeListTile(
                 source = {props.name == favouritePokemonName ? require('@/assets/images/heart-filled.svg') : require('@/assets/images/heart-empty.svg')}
             />
         </Pressable>
-        {/* <Pressable>
-            <Image style = {styles.heart} source = {{uri : ''}}></Image>
-        </Pressable> */}
-        {/* <Button title='Favourite'></Button> */}
     </View>
     }
-    return (<View>
-        <Text>{props.name} is loading ...</Text>
-    </View>);
+    return <></>
+    // return (<View>
+    //     <Text>{props.name} is loading ...</Text>
+    // </View>);
 }
 
 const styles = StyleSheet.create({
     pokeTile : {
         height:100,
-        justifyContent : 'center',
-        alignItems : 'center',
+        // justifyContent : 'center',
+        // alignItems : 'center',
         direction :'ltr',
         flexDirection: 'row',
     },
     pokeSprite : {
         width : 100,
         height : 100,
+        flex : 1
     },
     heart : {
         width : 100,
         height : 100,
+        flex: 1,
+        alignSelf: 'flex-end',
     },
 }) 
