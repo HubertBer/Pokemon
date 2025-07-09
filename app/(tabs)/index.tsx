@@ -27,8 +27,15 @@ export default function favourite_pokemon() {
 
     const onNewFavouritePokemon = () => {
         const pokeName = inputName
-        setFavouritePokemonName(pokeName.toLowerCase());
-        storeFavouritePokemon(pokeName.toLowerCase());
+
+        fetch('https://pokeapi.co/api/v2/pokemon/' + pokeName)
+            .then(resp => resp.json())
+            .then(json => {
+                if (json && json.name && json.name.toLowerCase() === pokeName.toLowerCase()) {
+                    setFavouritePokemonName(json.name.toLowerCase())
+                    storeFavouritePokemon(json.name.toLowerCase())
+                }
+            })
     }
 
     const unfovouriteButton = (favouritePokemonName === '' || !favouritePokemonName)
