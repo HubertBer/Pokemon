@@ -7,7 +7,6 @@ import {
     Camera,
     runAsync,
     useCameraDevice,
-    useCameraFormat,
     useCameraPermission, useFrameProcessor
 } from "react-native-vision-camera";
 import {
@@ -19,7 +18,6 @@ import { useRunOnJS } from "react-native-worklets-core";
 import { CameraRoll } from "@react-native-camera-roll/camera-roll";
 
 const PHONE_WIDTH = Dimensions.get('window').width;
-const PHONE_HEIGHT = Dimensions.get('window').height;
 
 export default function CameraTab() {
     const camera = useRef<Camera>(null)
@@ -57,8 +55,8 @@ export default function CameraTab() {
                 {translateX : (PHONE_WIDTH - left.value) },
                 {translateY : top.value},
             ],
-            width : headWidth.value,
-            height : headHeight.value,
+            width : headWidth.value / 2,
+            height : headHeight.value / 2,
         }
     });
 
@@ -68,11 +66,11 @@ export default function CameraTab() {
     } = useWindowDimensions()
     const device = useCameraDevice('front');
 
-    const updatePosition = (x : number, y : number, hx : number, hy : number) => {
+    const updatePosition = (x : number, y : number, w : number, h : number) => {
         left.value = x
         top.value = y
-        headWidth.value = hx
-        headHeight.value = hy
+        headWidth.value = w
+        headHeight.value = h
     }
 
     const updatePosJS = useRunOnJS(updatePosition, [])
@@ -111,17 +109,6 @@ export default function CameraTab() {
         })
     }, [])
 
-    const format = useCameraFormat(device, [
-    { 
-        videoResolution: { 
-            width: 720,
-            height : 480
-        },
-
-        videoHdr : false,
-    }
-    ])
-
     if (!hasPermission) {
         requestPermission();
         return <View>
@@ -142,7 +129,7 @@ export default function CameraTab() {
         if (camera) {
             const file = await camera.current?.takePhoto()
             await CameraRoll.save(`file://${file?.path }`, {
-            type: 'photo',
+                type: 'photo',
             })
         }
     }

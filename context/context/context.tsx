@@ -45,3 +45,22 @@ export function SelectedPokemonProvider ({children, pokemonName, setPokemonName}
         </SelectedPokemon.Provider>
     )
 }
+
+type VisibleProps = {
+    children? : React.ReactNode,
+    visibleTiles : Set<number>,
+}
+
+export const VisibleTiles = createContext<{visibleTiles: Set<number>}>({visibleTiles: new Set([])})
+
+export function VisibleTilesProvider ({children, visibleTiles} : VisibleProps) {
+    return (
+        <VisibleTiles.Provider
+            value = {{
+                visibleTiles : visibleTiles
+            }}
+        >
+            {children}
+        </VisibleTiles.Provider>
+    )
+}
