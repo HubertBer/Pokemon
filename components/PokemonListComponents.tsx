@@ -1,10 +1,10 @@
-import { FavouritePokemon, VisibleTiles } from "@/context/context/context";
+import { FavouritePokemon } from "@/context/context/context";
 import { storeFavouritePokemon } from "@/storage/PokeStorage";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { useContext, useEffect, useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import Animated, { useAnimatedStyle, useSharedValue, withSequence, withTiming } from "react-native-reanimated";
+import { Pressable, StyleSheet, Text } from "react-native";
+import Animated, { FadeIn, LightSpeedInLeft, useAnimatedStyle, useSharedValue, withSequence, withTiming } from "react-native-reanimated";
 
 export function PokeListTile(
     props: {
@@ -12,7 +12,6 @@ export function PokeListTile(
         setSelectedPokemonName: (name: string) => void,
         index: number
     }) {
-    const {visibleTiles} = useContext(VisibleTiles)
     const {favouritePokemonName, setFavouritePokemonName} = useContext(FavouritePokemon);
     const pokeUrl = 'https://pokeapi.co/api/v2/pokemon/' + props.name
     const [pokeJson, setPokeJson] = useState<{sprites : {front_default : string}, name : string} | null>(null);
@@ -30,12 +29,13 @@ export function PokeListTile(
     const randomRange = (x : number, y : number) => {
         return Math.random() * (y - x) + x
     }
-    const pokePosX = useSharedValue(randomRange(-400, 400))
-    const pokePosY = useSharedValue(randomRange(-400, 400))
+    const pokePosX = useSharedValue(0)
+    const pokePosY = useSharedValue(0)
     const pokeRotation = useSharedValue('360deg')
     const pokeScale = useSharedValue(1)
 
     const pokeStyle = useAnimatedStyle(() => {
+        'worklet'
         return {
             transform: [
                 {translateX: pokePosX.value},
@@ -48,15 +48,14 @@ export function PokeListTile(
         }
     })
 
-    useEffect(() => {
-        // if (visibleTiles.has(props.index)) {
-            pokePosX.value = randomRange(-400, 400)
-            pokePosY.value = randomRange(-400, 400)
+    // useEffect(() => {
+    //     'worklet'
+    //     pokePosX.value = randomRange(-400, 400)
+    //     pokePosY.value = randomRange(-400, 400)
 
-            pokePosX.value = withTiming(0, {duration : randomRange(700, 1700)})
-            pokePosY.value = withTiming(0, {duration : randomRange(700, 1700)})
-        // }
-    }, [visibleTiles])
+    //     pokePosX.value = withTiming(0, {duration : randomRange(700, 1700)})
+    //     pokePosY.value = withTiming(0, {duration : randomRange(700, 1700)})
+    // }, [])
         
     useEffect(() => {
         if (favouritePokemonName && favouritePokemonName.toLowerCase() == props.name.toLowerCase()) {
@@ -88,7 +87,7 @@ export function PokeListTile(
 
 
     if (pokeJson) {
-        return <View style={styles.pokeTile}>
+        return <Animated.View style={styles.pokeTile} entering={LightSpeedInLeft.duration(randomRange(500, 1500))}>
         <Text> Poke name : {props.name} </Text>
         <Pressable
             onPress={() => {
@@ -100,6 +99,7 @@ export function PokeListTile(
             <Animated.Image
                 style = {pokeStyle}
                 source = {{ uri: pokeJson.sprites.front_default }}
+                entering = { FadeIn }    
             />
         </Pressable>
 
@@ -119,7 +119,7 @@ export function PokeListTile(
                 source = {props.name == favouritePokemonName ? require('@/assets/images/heart-filled.svg') : require('@/assets/images/heart-empty.svg')}
             />
         </Pressable>
-    </View>
+    </Animated.View>
     }
     return <></>
     // return (<View>
